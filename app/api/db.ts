@@ -1,8 +1,8 @@
 
-import  { MongoClient, ServerApiVersion,Db, DbStatsOptions } from 'mongodb';
+import  { MongoClient, ServerApiVersion,Db } from 'mongodb';
 const uri = "mongodb+srv://gopikalakshmia:Password@cluster0.5g4u3zt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 let cachedClient:MongoClient|null=null;
-let cachedDb:DbStatsOptions|null=null;
+let cachedDb:Db|null=null;
 
 
  export async function connectToDb(){

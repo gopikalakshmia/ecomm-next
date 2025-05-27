@@ -1,8 +1,21 @@
 import Image from 'next/image';
-import { productList} from '../productList';
 import Link from 'next/link';
-export default function ProductsListPage(){
- 
+
+export interface Product{
+Id:string,
+Name:string,
+Description:string,
+ImageLink:string,
+Price:number
+}
+
+
+export default async function ProductsListPage(){
+ const response=await fetch("http://localhost:3000/api/products");
+ let productList:Product[]=[];
+ if(response.ok){
+    productList=await response.json(); 
+ }
     return(
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6">
         {productList.map(item=><Link href={`/products/${item.Id}`} key={item.Id} className="bg-white shadow-lg rounded-lg p-4 flex flex-col items-center">

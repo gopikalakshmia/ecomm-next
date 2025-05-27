@@ -1,18 +1,23 @@
-import { productList } from "@/app/productList";
+
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-type ProductPageProps= {
+type ProductPageProps = {
   params: {
     id: string;
   };
-}
+};
 
-export default  function ProductPage({ params }: ProductPageProps) {
-  const selectedProduct = productList.find((item) => item.Id === params.id);
-
+export default async function ProductPage({ params }: ProductPageProps) {
+  const response = await fetch(
+    `http://localhost:3000/api/products/${params.id}`
+  );
+  if (!response.ok) {
+    return notFound();
+  }
+  const selectedProduct = await response.json();
   if (!selectedProduct) {
-    notFound(); // this works only in a server component
+    return notFound(); // this works only in a server component
   }
 
   return (

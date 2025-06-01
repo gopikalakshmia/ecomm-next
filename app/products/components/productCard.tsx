@@ -12,32 +12,40 @@ export default function ProductCard({ productItem }: { productItem: Product }) {
       body: JSON.stringify(cart),
       headers: { "Content-Type": "application/json" },
     });
-    if(!response.ok){
-      console.log("Product is not added to the Cart")
-    }else {
-  console.log("Product is  added to the Cart");
-}
+    if (!response.ok) {
+      console.log("Product is not added to the Cart");
+    } else {
+      console.log("Product is  added to the Cart");
+    }
   };
 
   return (
     <div
       key={productItem.Id}
-      className="bg-white shadow-lg rounded-lg p-4 flex flex-col items-center"
+      className="bg-white shadow-md rounded-xl p-4 flex flex-col items-center transition duration-300 hover:shadow-2xl hover:scale-105"
     >
-      <Link href={`/products/${productItem.Id}`}>
-        <div className="text-center cursor-pointer">
+      <Link
+        href={`/products/${productItem.Id}`}
+        className="text-center cursor-pointer"
+      >
+        <div>
           <Image
             src={productItem.ImageLink}
             alt="Product Image"
-            width={100}
-            height={100}
+            width={150}
+            height={150}
+            className="rounded"
           />
-          <p>{productItem.Description}</p>
-          <h1>${productItem.Price}</h1>
+          <p className="mt-2 text-gray-700 font-medium">
+            {productItem.Description}
+          </p>
+          <h1 className="text-lg text-blue-600 font-bold">
+            ${productItem.Price}
+          </h1>
         </div>
       </Link>
       <button
-        className="bg-blue-600 text-white px-4 py-2 rounded m-5 hover:bg-blue-700"
+        className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full mt-4 hover:from-blue-600 hover:to-purple-700 transition-colors"
         onClick={() => handleAddToCart(productItem.Id)}
       >
         Add to Cart

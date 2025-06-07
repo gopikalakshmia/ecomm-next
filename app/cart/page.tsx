@@ -1,7 +1,7 @@
 import { Product } from '../productList';
 import ProductCard from '../products/components/productCard';
 export default async function CartPage() {
-    const response=await fetch("http://localhost:3000/api/cart");
+    const response=await fetch("http://localhost:3000/api/cart",{cache: "no-store"});
     let cartProducts:Product[]=[];
     if(response.ok){
         cartProducts=await response.json();

@@ -2,12 +2,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "../page";
+import { useState } from "react";
 
 export default function ProductCard({ productItem }: { productItem: Product }) {
+  const [cartQty,setCartQty]=useState(productItem.Qty?productItem.Qty:0);
   const handleAddToCart = async (productId: string) => {
-    console.log(productId);
     const cart = { userId: "1", productId: productId, Qty: 1 };
-    const response = await fetch("http://localhost:3000/api/products", {
+    const response = await fetch("http://localhost:3000/api/cart", {
       method: "POST",
       body: JSON.stringify(cart),
       headers: { "Content-Type": "application/json" },
@@ -18,6 +19,23 @@ export default function ProductCard({ productItem }: { productItem: Product }) {
       console.log("Product is  added to the Cart");
     }
   };
+
+  const handleQty=async(productId: string,Qty:number)=>{
+    const cart={productId:productId,Qty:Qty};
+    const response=await fetch("http://localhost:3000/api/cart",
+      {
+        method:"PUT",
+        body:JSON.stringify(cart),
+        headers:{"Content-Type":"application/json"}
+      }
+    );
+    if (!response.ok) {
+      console.log("Cart is updated");
+      setCartQty(prevValue=>prevValue+Qty);
+    } else {
+      console.log("Cart is not updated");
+    }
+  }
 
   return (
     <div
@@ -44,12 +62,30 @@ export default function ProductCard({ productItem }: { productItem: Product }) {
           </h1>
         </div>
       </Link>
-      <button
-        className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full mt-4 hover:from-blue-600 hover:to-purple-700 transition-colors"
-        onClick={() => handleAddToCart(productItem.Id)}
-      >
-        Add to Cart
-      </button>
+      {productItem.Qty ? (
+        <div>
+          <button
+            className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 m-2 py-2 rounded-full mt-4 hover:from-blue-600 hover:to-purple-700 transition-colors"
+            onClick={() => handleQty(productItem.Id,1)}
+          >
+            +
+          </button>
+         {cartQty}
+          <button
+            className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 m-2 rounded-full mt-4 hover:from-blue-600 hover:to-purple-700 transition-colors"
+               onClick={() => handleQty(productItem.Id,-1)}
+          >
+            -
+          </button>
+        </div>
+      ) : (
+        <button
+          className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full mt-4 hover:from-blue-600 hover:to-purple-700 transition-colors"
+          onClick={() => handleAddToCart(productItem.Id)}
+        >
+          Add to Cart
+        </button>
+      )}
     </div>
   );
 }

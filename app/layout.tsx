@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+
+import ClientLayout from "./clientLayout";
 import "./globals.css";
 import Navbar from "./navbar";
 
@@ -14,8 +14,9 @@ export default function RootLayout({
       <body
         
       >
-        <Navbar/>
+       <ClientLayout>
         {children}
+        </ClientLayout>
       </body>
     </html>
   );

@@ -1,0 +1,79 @@
+// app/api/auth/[...nextauth]/route.ts
+import NextAuth, { NextAuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
+import { connectToDb } from "../../db";
+import { compare } from "bcryptjs";
+
+export const authOptions: NextAuthOptions = {
+  adapter: MongoDBAdapter(connectToDb().then(res => res.client)), // Pass client, not db
+  providers: [
+    // Google OAuth
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+
+    // Credentials (email + password)
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        const { db } = await connectToDb();
+        const user = await db.collection("users").findOne({ email: credentials?.email });
+
+        if (!user || !user.password) {
+          return null;
+        }
+
+        const isValid = await compare(credentials?.password || '', user.password);
+        if (!isValid) return null;
+
+        return { id: user._id.toString(), email: user.email, name: user.name };
+      },
+    }),
+  ],
+
+  secret: process.env.AUTH_SECRET,
+  session: { strategy: "jwt" },
+
+  callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider === "google") {
+        const { db } = await connectToDb();
+        const existingUser = await db.collection("users").findOne({ email: user.email });
+
+        if (!existingUser) {
+          await db.collection("users").insertOne({
+            email: user.email,
+            name: user.name,
+          });
+        }
+
+        // Redirect to /setPassword if user signed up via Google but has no password
+        if (!existingUser?.password) {
+          return "/setPassword";
+        }
+      }
+      return true;
+    },
+
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.sub;
+      }
+      return session;
+    },
+  },
+
+  pages: {
+    signIn: "/login", // Custom login page
+  },
+};
+
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };

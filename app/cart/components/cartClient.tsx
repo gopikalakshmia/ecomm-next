@@ -45,8 +45,8 @@ export default function CartClient() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-8 md:px-12">
-      <h1 className="text-4xl font-bold mb-8 text-center text-blue-700">
+    <div className="min-h-screen bg-[#F8F4E1] px-4 py-8 md:px-12">
+      <h1 className="text-4xl font-bold mb-8 text-center text-[#BF9264]">
         🛒 Your Cart
       </h1>
 

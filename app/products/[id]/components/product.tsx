@@ -28,14 +28,14 @@ return(
           <p className="text-gray-600 mt-2 text-center">
             {productDetails.Description}
           </p>
-          <p className="text-lg font-semibold text-blue-700 mt-2">
+          <p className="text-lg font-semibold text-[#BF9264] mt-2">
             ${productDetails.Price}
           </p>
           <button
-        className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full mt-4 hover:from-blue-600 hover:to-purple-700 transition-colors"
+           className="text-[#BF9264] border border-[#BF9264] px-4 py-2 rounded-full mt-4 transition duration-300 hover:bg-[#BF9264] hover:text-white cursor-pointer"
         onClick={() => handleAddToCart(productDetails.Id)}
       >
-        Add to Cart
+       Buy Now
       </button>
         </div>
 )

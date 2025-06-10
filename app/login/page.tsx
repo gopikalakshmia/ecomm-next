@@ -49,7 +49,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
+    <div className="min-h-screen bg-[#F8F4E1] flex items-center justify-center">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-xl shadow-xl w-full max-w-sm"
@@ -92,7 +92,7 @@ export default function LoginPage() {
         {/* Sign In */}
         <button
           type="submit"
-          className="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 transition"
+          className="w-full bg-[#BF9264] text-white border-1 py-2 rounded hover:bg-purple-700 transition"
           disabled={isSubmitting}
         >
           {isSubmitting ? 'Signing in...' : 'Sign In'}
@@ -104,7 +104,7 @@ export default function LoginPage() {
         {/* Google OAuth */}
         <button
           onClick={handleGoogleSignUp}
-          className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded hover:bg-gray-100 transition"
+          className="w-full flex items-center justify-center gap-2 border border-[#BF9264] py-2 rounded hover:bg-gray-100 transition"
         >
           <FcGoogle className="text-xl" />
           <span>Sign in with Google</span>

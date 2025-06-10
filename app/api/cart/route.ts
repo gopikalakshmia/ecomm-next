@@ -17,35 +17,35 @@ import { error } from "console";
 //   });
 // }
 
-export async function GET() {
-  const { db } = await connectToDb();
-  const cart = await db.collection("Cart").find({}).toArray();
-  const productIds = cart.map((item) => item.productId);
-  const cartProducts = await db
-    .collection("Products")
-    .find({ Id: { $in: productIds } })
-    .toArray();
+// export async function GET() {
+//   const { db } = await connectToDb();
+//   const cart = await db.collection("Cart").find({}).toArray();
+//   const productIds = cart.map((item) => item.productId);
+//   const cartProducts = await db
+//     .collection("Products")
+//     .find({ Id: { $in: productIds } })
+//     .toArray();
 
-  const cartProdWithQty = cartProducts.map((item) => ({
-    ...item,
-    Qty: cart.find((cart) => cart.productId == item.Id)?.Qty,
-  }));
-  console.log(cartProdWithQty);
-  if (cartProdWithQty) {
-    return new Response(JSON.stringify(cartProdWithQty), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  } else {
-    return new Response(
-      JSON.stringify({ message: "Error in Loading data..." }),
-      {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-  }
-}
+//   const cartProdWithQty = cartProducts.map((item) => ({
+//     ...item,
+//     Qty: cart.find((cart) => cart.productId == item.Id)?.Qty,
+//   }));
+//   console.log(cartProdWithQty);
+//   if (cartProdWithQty) {
+//     return new Response(JSON.stringify(cartProdWithQty), {
+//       status: 200,
+//       headers: { "Content-Type": "application/json" },
+//     });
+//   } else {
+//     return new Response(
+//       JSON.stringify({ message: "Error in Loading data..." }),
+//       {
+//         status: 200,
+//         headers: { "Content-Type": "application/json" },
+//       }
+//     );
+//   }
+// }
 export async function POST(req: NextRequest) {
   try {
     const cart = await req.json();
@@ -97,8 +97,8 @@ export async function PUT(req: NextRequest) {
   const { db } = await connectToDb();
   const result = await db
     .collection("Cart")
-    .updateOne({ productId: body.productId }, { $inc: { Qty: body.Qty } });
-  if (result.modifiedCount>1) {
+    .updateOne({ userId:body.userId,productId: body.productId }, { $inc: { Qty: body.Qty } });
+  if (result.modifiedCount===1) {
     return new Response(
       JSON.stringify({ message: "Cart updated" }),
       { status: 200, headers: { "Content-Type": "applicationjson" } }

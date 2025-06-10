@@ -3,11 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Product } from "../page";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 export default function ProductCard({ productItem }: { productItem: Product }) {
   const [cartQty,setCartQty]=useState(productItem.Qty?productItem.Qty:0);
+  const {data:session}=useSession();
   const handleAddToCart = async (productId: string) => {
-    const cart = { userId: "1", productId: productId, Qty: 1 };
+    const cart = { userId: session?.user.id, productId: productId, Qty: 1 };
     const response = await fetch("http://localhost:3000/api/cart", {
       method: "POST",
       body: JSON.stringify(cart),
@@ -21,7 +23,7 @@ export default function ProductCard({ productItem }: { productItem: Product }) {
   };
 
   const handleQty=async(productId: string,Qty:number)=>{
-    const cart={productId:productId,Qty:Qty};
+    const cart={userId: session?.user.id,productId:productId,Qty:Qty};
     const response=await fetch("http://localhost:3000/api/cart",
       {
         method:"PUT",
@@ -29,7 +31,7 @@ export default function ProductCard({ productItem }: { productItem: Product }) {
         headers:{"Content-Type":"application/json"}
       }
     );
-    if (!response.ok) {
+    if (response.ok) {
       console.log("Cart is updated");
       setCartQty(prevValue=>prevValue+Qty);
     } else {

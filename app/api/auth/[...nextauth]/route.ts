@@ -4,10 +4,9 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
 import { connectToDb } from "../../db";
-import { compare } from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
-  adapter: MongoDBAdapter(connectToDb().then(res => res.client)), // Pass client, not db
+  adapter: MongoDBAdapter(connectToDb().then((res) => res.client)), // Pass client, not db
   providers: [
     // Google OAuth
     GoogleProvider({
@@ -24,15 +23,19 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         const { db } = await connectToDb();
-        const user = await db.collection("users").findOne({ email: credentials?.email });
+        const user = await db
+          .collection("users")
+          .findOne({ email: credentials?.email });
 
-        if (!user || !user.password) {
+        if (!user) {
+          console.error("User not found");
           return null;
         }
 
-        const isValid = await compare(credentials?.password || '', user.password);
-        if (!isValid) return null;
-
+        if (credentials?.password !== user.password) {
+          console.error("Password mismatch");
+          return null;
+        }
         return { id: user._id.toString(), email: user.email, name: user.name };
       },
     }),
@@ -45,7 +48,9 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account }) {
       if (account?.provider === "google") {
         const { db } = await connectToDb();
-        const existingUser = await db.collection("users").findOne({ email: user.email });
+        const existingUser = await db
+          .collection("users")
+          .findOne({ email: user.email });
 
         if (!existingUser) {
           await db.collection("users").insertOne({
@@ -56,7 +61,11 @@ export const authOptions: NextAuthOptions = {
 
         // Redirect to /setPassword if user signed up via Google but has no password
         if (!existingUser?.password) {
-          return "/setPassword";
+          const query = new URLSearchParams({
+            email: user.email,
+            name: user.name,
+          });
+          return "/setPassword?" + query.toString();
         }
       }
       return true;

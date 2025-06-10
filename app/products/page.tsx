@@ -1,3 +1,4 @@
+import HeroSection from "./components/header";
 import ProductCard from "./components/productCard";
 
 export interface Product {
@@ -16,10 +17,13 @@ export default async function ProductsListPage() {
   }
 
   return (
+    <div>
+      <HeroSection/>
    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 p-6 bg-[#F8F4E1]">
       {productList.map((item) => (
         <ProductCard key={item.Id} productItem={item} />
       ))}
+    </div>
     </div>
   );
 }

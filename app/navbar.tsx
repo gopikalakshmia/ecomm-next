@@ -5,8 +5,9 @@ export default function Navbar() {
   const {data:session}=useSession();
   return (
     <div className="flex justify-between items-center px-8 py-4  bg-[#F8F4E1] text-black ">
-      {/* Logo */}
-      <div className="text-2xl font-extrabold tracking-wide">📖 Whispering Pages 🕊️</div>
+      {/* Logo
+      <div className="text-2xl font-extrabold tracking-wide">📖 Whispering Pages 🕊️</div> */}
+      <div></div>
 
       {/* Navigation Links */}
       <div className="flex space-x-6 text-lg">

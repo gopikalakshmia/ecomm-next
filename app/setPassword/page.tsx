@@ -40,6 +40,7 @@ export default function SetPasswordPage() {
       }
     } catch (err) {
       setMessage('⚠️ Server error.');
+      console.error(err);
     } finally {
       setLoading(false);
     }

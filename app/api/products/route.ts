@@ -1,4 +1,3 @@
-import { NextRequest } from "next/server";
 import { connectToDb } from "../db";
 export async function GET() {
   const { db } = await connectToDb();

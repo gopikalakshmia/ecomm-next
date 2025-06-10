@@ -12,7 +12,7 @@ export default function Navbar() {
       {/* Navigation Links */}
       <div className="flex space-x-6 text-lg">
         <Link href="/" className="hover:bg-[#F2C078] p-2 rounded-md transition-colors duration-200">Home</Link>
-        <Link href="/deals" className="hover:bg-[#F2C078] p-2 rounded-md transition-colors duration-200">Deals</Link>
+        {/* <Link href="/deals" className="hover:bg-[#F2C078] p-2 rounded-md transition-colors duration-200">Deals</Link> */}
         <Link href="/cart" className="hover:bg-[#F2C078] p-2 rounded-md transition-colors duration-200">Cart</Link>
         {session ? (
           <button

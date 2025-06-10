@@ -1,11 +1,11 @@
 import { NextRequest } from "next/server";
 import { connectToDb } from "../../db";
 
-type Params = {
+type userParams = {
   id: string;
 };
 
-export async function GET(req: NextRequest, { params }: { params: Params }) {
+export async function GET(req: NextRequest, { params }: { params: userParams }) {
   const { db } = await connectToDb();
   const userId = params.id;
 

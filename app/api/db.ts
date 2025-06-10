@@ -1,29 +1,29 @@
+import { MongoClient, ServerApiVersion, Db } from 'mongodb';
 
-import  { MongoClient, ServerApiVersion,Db } from 'mongodb';
-const uri = "mongodb+srv://gopikalakshmia:Password@cluster0.5g4u3zt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-let cachedClient:MongoClient|null=null;
-let cachedDb:Db|null=null;
+const uri = process.env.MONGODB_URI!;
+if (!uri) throw new Error("MONGODB_URI environment variable is missing");
 
+let cachedClient: MongoClient | null = null;
+let cachedDb: Db | null = null;
 
- export async function connectToDb(){
-
-  if(cachedClient && cachedDb){
-    return {client:cachedClient,db:cachedDb}
+export async function connectToDb() {
+  if (cachedClient && cachedDb) {
+    return { client: cachedClient, db: cachedDb };
   }
-    // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
 
+  const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    },
+  });
 
-    await client.connect();
-    cachedClient=client;
-    cachedDb=client.db('EcommNext')
-  return {client:client,db:client.db('EcommNext')}
-   
+  await client.connect();
+  const db = client.db('EcommNext');
+
+  cachedClient = client;
+  cachedDb = db;
+
+  return { client, db };
 }
-

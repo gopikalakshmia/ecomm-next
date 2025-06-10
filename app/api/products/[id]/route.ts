@@ -4,10 +4,11 @@ import { connectToDb } from "../../db";
 type Params = {
   id: string;
 };
-
-export async function GET(req: NextRequest, { params }: { params: Params }) {
+export async function GET(req: NextRequest, context: { params: Params }) {
+  const { params } = await context;
+  const {id}=await params;
   const { db } = await connectToDb();
-  const product = await db.collection("Products").findOne({ Id: params.id });
+  const product = await db.collection("Products").findOne({ Id: id });
   if (!product) {
     return new Response(JSON.stringify({ message: "Product not found" }), {
       status: 200,

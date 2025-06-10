@@ -1,22 +1,26 @@
 import { NextRequest } from "next/server";
 import { connectToDb } from "../../db";
 
-type userParams = {
+type Params = {
   id: string;
 };
 
-export async function GET(req: NextRequest, { params }: { params: userParams }) {
+export async function GET(req: NextRequest, context: { params: Params }) {
+  const { params } = await context;
+  const { id } = await params;
   const { db } = await connectToDb();
-  const userId = params.id;
 
   // Fetch all cart items for the user
-  const cartItems = await db.collection("Cart").find({ userId }).toArray();
+  const cartItems = await db.collection("Cart").find({ userId: id }).toArray();
 
   if (!cartItems || cartItems.length === 0) {
-    return new Response(JSON.stringify({ message: "Cart not found or empty" }), {
-      status: 404,
-      headers: { "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ message: "Cart not found or empty" }),
+      {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 
   const productIds = cartItems.map((item) => item.productId);

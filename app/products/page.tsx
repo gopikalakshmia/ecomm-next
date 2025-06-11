@@ -10,7 +10,9 @@ export interface Product {
 }
 
 export default async function ProductsListPage() {
-const response = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/products`);
+ const response = await fetch("https://whispperingpagesecomm.vercel.app/api/products", {
+    cache: "no-store",
+  });
   let productList: Product[] = [];
   if (response.ok) {
     productList = await response.json();

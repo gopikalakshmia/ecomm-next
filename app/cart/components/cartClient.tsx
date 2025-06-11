@@ -1,9 +1,8 @@
 'use client';
-
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { Product } from "../../productList";
 import ProductCard from "@/app/products/components/productCard";
+import { Product } from "@/app/products/page";
 // Make sure this import path is correct
 
 export default function CartClient() {
@@ -11,22 +10,32 @@ export default function CartClient() {
   const [cartProducts, setCartProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    console.log("userid:"+session?.user?.id);
+useEffect(() => {
+  const fetchCart = async () => {
     if (!session?.user?.id) return;
+    const userId = session.user.id.toString();
+    setLoading(true);
 
-  setLoading(true);
+    try {
+      const res = await fetch(`/api/cart/${userId}`, {
+        cache: "no-store",
+        next: { revalidate: 0 },
+      });
 
-
- fetch(`/api/cart/${session.user.id}`, { cache: "no-store" })
-    .then((res) => {
       if (!res.ok) throw new Error("Failed to fetch cart");
-      return res.json();
-    })
-    .then((data) => setCartProducts(data))
-    .catch((err) => console.error(err))
-    .finally(() => setLoading(false));
+
+      const data = await res.json();
+      setCartProducts(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchCart();
 }, [session]);
+
 
   if (status === "loading") {
     return (

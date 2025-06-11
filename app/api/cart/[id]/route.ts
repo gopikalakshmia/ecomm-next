@@ -1,46 +1,66 @@
 import { NextRequest } from "next/server";
 import { connectToDb } from "../../db";
 
-type Params = {
-  id: string;
-};
+export async function GET(
+  req: NextRequest,
+   context 
+) {
+  const { id } = await context.params;
 
-export async function GET(req: NextRequest, context: { params: Params }) {
-  const { params } = await context;
-  const { id } = await params;
-  const { db } = await connectToDb();
+  if (!id) {
+    return new Response(JSON.stringify({ error: "Missing ID" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 
-  // Fetch all cart items for the user
-  const cartItems = await db.collection("Cart").find({ userId: id }).toArray();
+  try {
+    const { db } = await connectToDb();
 
-  if (!cartItems || cartItems.length === 0) {
+    const cartItems = await db
+      .collection("Cart")
+      .find({ userId: id })
+      .toArray();
+
+    if (!cartItems.length) {
+      return new Response(
+        JSON.stringify({ message: "Cart is empty or not found" }),
+        {
+          status: 404,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    const productIds = cartItems.map((item) => item.productId);
+
+    const products = await db
+      .collection("Products")
+      .find({ Id: { $in: productIds } })
+      .toArray();
+
+    const cartWithQty = products.map((product) => {
+      const cartItem = cartItems.find(
+        (item) => item.productId === product.Id
+      );
+      return {
+        ...product,
+        Qty: cartItem?.Qty || 1,
+      };
+    });
+
+    return new Response(JSON.stringify(cartWithQty), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (err) {
+    console.error(err);
     return new Response(
-      JSON.stringify({ message: "Cart not found or empty" }),
+      JSON.stringify({ error: "Internal server error" }),
       {
-        status: 404,
+        status: 500,
         headers: { "Content-Type": "application/json" },
       }
     );
   }
-
-  const productIds = cartItems.map((item) => item.productId);
-
-  const products = await db
-    .collection("Products")
-    .find({ Id: { $in: productIds } })
-    .toArray();
-
-  // Combine product info with quantity from cart
-  const cartProdWithQty = products.map((product) => {
-    const cartItem = cartItems.find((item) => item.productId === product.Id);
-    return {
-      ...product,
-      Qty: cartItem?.Qty || 1,
-    };
-  });
-
-  return new Response(JSON.stringify(cartProdWithQty), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
 }

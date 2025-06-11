@@ -111,8 +111,9 @@ export async function PUT(req: NextRequest) {
 
   }
  catch(ex){
+  console.error(ex);
   return new Response(
-      JSON.stringify({ message: "Error updating cart",error:ex.message }),
+      JSON.stringify({ message: "Error updating cart" }),
       { status: 500, headers: { "Content-Type": "applicationjson" } }
     );
  }

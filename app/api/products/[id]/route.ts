@@ -1,10 +1,8 @@
 import { NextRequest } from "next/server";
 import { connectToDb } from "../../db";
 
-type Params = {
-  id: string;
-};
-export async function GET(req: NextRequest, context: { params: Params }) {
+
+export async function GET(req: NextRequest, context) {
   const { params } = await context;
   const {id}=await params;
   const { db } = await connectToDb();

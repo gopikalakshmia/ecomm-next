@@ -1,6 +1,6 @@
 import HeroSection from "./components/header";
 import ProductCard from "./components/productCard";
-
+export const dynamic = 'force-dynamic';
 export interface Product {
   Id: string;
   Name: string;

@@ -10,7 +10,7 @@ export default function ProductCard({ productItem }: { productItem: Product }) {
   const { data: session } = useSession();
   const handleAddToCart = async (productId: string) => {
     const cart = { userId: session?.user.id, productId: productId, Qty: 1 };
-    const response = await fetch("http://localhost:3000/api/cart", {
+    const response = await fetch("/api/cart", {
       method: "POST",
       body: JSON.stringify(cart),
       headers: { "Content-Type": "application/json" },
@@ -24,7 +24,7 @@ export default function ProductCard({ productItem }: { productItem: Product }) {
 
   const handleQty = async (productId: string, Qty: number) => {
     const cart = { userId: session?.user.id, productId: productId, Qty: Qty };
-    const response = await fetch("http://localhost:3000/api/cart", {
+    const response = await fetch("/api/cart", {
       method: "PUT",
       body: JSON.stringify(cart),
       headers: { "Content-Type": "application/json" },

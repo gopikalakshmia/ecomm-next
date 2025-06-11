@@ -12,7 +12,7 @@ import Product from "./components/product";
 export default async function ProductPage({ params }) {
   const { id } = await params;
   const response = await fetch(
-    `http://localhost:3000/api/products/${id}`
+    `https://whispperingpagesecomm.vercel.app/api/products/${id}`
   );
   if (!response.ok) {
     return notFound();

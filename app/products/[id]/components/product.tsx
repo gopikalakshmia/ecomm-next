@@ -4,7 +4,7 @@ export default function Product({productDetails}){
    const handleAddToCart = async (productId: string) => {
     console.log(productId);
     const cart = { userId: "1", productId: productId, Qty: 1 };
-    const response = await fetch("http://localhost:3000/api/products", {
+    const response = await fetch("https://whispperingpagesecomm.vercel.app/api/products", {
       method: "POST",
       body: JSON.stringify(cart),
       headers: { "Content-Type": "application/json" },
